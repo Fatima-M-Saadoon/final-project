@@ -39,8 +39,8 @@ class SigninSchema(Schema):
 
 
 class AccountUpdate(Schema):
-    first_name: str
-    last_name: str
+    name: str
+    username: str
     phone_number: Optional[str]
     address1: str
 

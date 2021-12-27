@@ -15,11 +15,11 @@ User = get_user_model()
 commerce_controller = Router(tags=['products'])
 order_controller = Router(tags=['order'])
 
-
+'''
 @commerce_controller.get(' search_products', response={
     200: List[ProductOut],
 })
-def list_products(request, q: str = None):
+def list_products(request, q: str = None,):
     products = Product.objects.all()
 
     if q:
@@ -29,11 +29,41 @@ def list_products(request, q: str = None):
 
     return products
 
+'''
+@commerce_controller.get('', summary='search products', response={
+    200: List[ProductOut],
+    404: MessageOut
+})
+def search_products(
+        request, *,
+        q: str = None,
+
+):
+    """
+    To create an order please provide:
+     - first_name
+     - last_name
+     - and list of Items (product + amount)
+    """
+    products_qs = Product.objects.filter(is_active=True)\
+        .select_related( 'category')
+
+    if not products_qs:
+        return 404, {'detail': 'No products found'}
+
+    if q:
+        products_qs = products_qs.filter(
+            Q(name__icontains=q) | Q(description__icontains=q)
+        )
+
+
+    return products_qs
+
 
 @commerce_controller.get('new_products', response={
     200: List[ProductOut],
 })
-def new_products(request, categorys: UUID4 = None, featuerd: bool = None, is_active: bool = None, ):
+def new_products(request, categorys: UUID4 = None, featuerd: bool = None, is_active: bool = None ):
     products = Product.objects.all()
 
     if categorys:
@@ -54,7 +84,7 @@ def new_products(request, categorys: UUID4 = None, featuerd: bool = None, is_act
 @commerce_controller.get(' specific_products/{id}', response={
     200: ProductOut
 })
-def retrieve_product(request, id:UUID4):
+def retrieve_product(request, id: UUID4):
     return get_object_or_404(Product, id=id)
 
 
@@ -139,7 +169,7 @@ def update_category(request, id: UUID4, update: CategoryCreat):
     return category_u
 
 
-@commerce_controller.delete('delete_Category/{id}' )
+@commerce_controller.delete('delete_Category/{id}')
 def delete_category(request, id: UUID4):
 
     deleted_category = get_object_or_404(Category, id=id)
@@ -191,15 +221,21 @@ def decrease_item(request, item_id: UUID4):
 @order_controller.delete('item_deleted/{id}',  auth=GlobalAuth(),response={204: MessageOut})
 def deleted_item(request, id: UUID4):
     user = get_object_or_404(User, id=request.auth['pk'])
-    item = get_object_or_404(Item, id=id ,use=user)
+    item = get_object_or_404(Item, id=id ,user=user)
     item.delete()
     return 204, {'detail', 'تم حذف المنتج بنجاح'}
-'''
-@order_controller.post('create_order',response=MessageOut)
-def creat_order(request ,payload= CreateOrder):
-    order = Order.objects.create(**payload.dict())
-    Order.total = Order.order_total
 
-    return Order.total, {'detail': 'تم تسجيل الطلب السعر الكلي '}
-'''
+@order_controller.post('create_order',auth=GlobalAuth(),response=MessageOut)
+def creat_order(request, id:UUID4):
+    user =User.objects.get(id=request.auth['pk'])
+    orderd_x=Order.objects.create(ordered=True,user=user)
+    user_item=Item.objects.filter(user=user)
+    orderd_x.items.add(user_item)
+
+    total=orderd_x.order_total
+    orderd_x.total=total
+    orderd_x.save()
+
+    return 200, {'detail':f'{total} ,تم الحجز السعر الكلي '}
+
 

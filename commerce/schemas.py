@@ -12,7 +12,6 @@ class CategoryOut(Schema):
 
 
 class CategoryCreat(Schema):
-    id: UUID4
     name: str
     description: str
     image: str
@@ -28,14 +27,13 @@ class ProductOut(Schema):
     size: str
     qty: int
     price: int
-    discounted_price: int
+    discounted_price: float
     category: CategoryOut
     created: datetime.datetime
     updated: datetime.datetime
 
 
 class ProductCreate(Schema):
-    id: UUID4
     is_featured: bool
     name: str
     description: str
@@ -43,7 +41,7 @@ class ProductCreate(Schema):
     qty: int
     cost: int
     price: int
-    discounted_price: int
+    discounted_price: float
     category_id: UUID4
 
 
@@ -52,10 +50,4 @@ class AddToCartPayload(Schema):
     product_id: UUID4
     qty: int
     ordered: bool
-'''
-class CreateOrder(Schema):
-    user_id=UUID4
-    items= str
-    total= int
-    ordered: bool
-'''
+

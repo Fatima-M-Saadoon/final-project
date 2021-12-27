@@ -1,5 +1,6 @@
 
 
+
 from PIL import Image
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -11,19 +12,19 @@ User = get_user_model()
 
 class ProductManager(models.Manager):
     def select(self):
-        return self.get_queryset().select_related('category')
+        return self.get_queryset().select_related('category','product','order')
 
 
 class Product(Entity):
     name = models.CharField('name', max_length=255)
     description = models.TextField('description', null=True, blank=True)
-    size = models.CharField('size', null=True, blank=True, max_length=3)
+    size = models.CharField('size',  max_length=6,null=True, blank=True)
     qty = models.IntegerField('qty')
-    cost = models.DecimalField('cost', max_digits=10, decimal_places=3)
-    price = models.DecimalField('price', max_digits=10, decimal_places=3)
-    discounted_price = models.DecimalField('discounted price', max_digits=10, decimal_places=3, null=True, blank=True)
+    cost = models.FloatField('cost')
+    price = models.FloatField('price')
+    discounted_price = models.FloatField('discounted price',default=0)
 
-    category = models.ForeignKey('commerce.Category', verbose_name='category', related_name='products',
+    category = models.ForeignKey('commerce.Category', verbose_name='category', related_name='product',
                                  null=True,
                                  blank=True,
                                  on_delete=models.SET_NULL)
@@ -37,13 +38,12 @@ class Product(Entity):
 
 
 class Order(Entity):
-    user = models.ForeignKey(User, verbose_name='user', related_name='orders', null=True, blank=True,
+    user = models.ForeignKey(User, verbose_name='user', related_name='order', null=True, blank=True,
                              on_delete=models.SET_NULL)
     total = models.DecimalField('total', blank=True, null=True, max_digits=1000, decimal_places=0)
-    status = models.ForeignKey('commerce.OrderStatus', verbose_name='status', related_name='orders',
-                               on_delete=models.SET)
-    note = models.CharField('note', null=True, blank=True, max_length=255)
-    ref_code = models.CharField('ref code', max_length=255)
+    #status = models.ForeignKey('commerce.OrderStatus', verbose_name='status', related_name='orders',on_delete=models.SET)
+    #note = models.CharField('note', null=True, blank=True, max_length=255)
+    #ref_code = models.CharField('ref code', max_length=255)
     ordered = models.BooleanField('ordered')
     items = models.ManyToManyField('commerce.Item', verbose_name='items', related_name='order')
 
@@ -64,7 +64,7 @@ class Item(Entity):
     Product can live alone in the system, while
     Item can only live within an order
     """
-    user = models.ForeignKey(User, verbose_name='user', related_name='items', null=True, blank=True, on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, verbose_name='user', related_name='item', null=True, blank=True, on_delete=models.SET_NULL)
     product = models.ForeignKey('commerce.Product', verbose_name='product', null=True, blank=True,
                                 on_delete=models.SET_NULL)
     item_qty = models.IntegerField('item_qty')
@@ -73,7 +73,7 @@ class Item(Entity):
     def __str__(self):
         return self.product.name
 
-
+'''
 class OrderStatus(Entity):
     NEW = 'NEW'  # Order with reference created, items are in the basket.
     # CREATED = 'CREATED'  # Created with items and pending payment.
@@ -96,7 +96,7 @@ class OrderStatus(Entity):
 
     def __str__(self):
         return self.title
-
+'''
 
 class Category(Entity):
     parent = models.ForeignKey('self', verbose_name='parent', related_name='children',
