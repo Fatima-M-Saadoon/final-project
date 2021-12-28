@@ -24,6 +24,7 @@ class ProductOut(Schema):
     is_featured: bool
     name: str
     description: str
+    image: str
     size: str
     qty: int
     price: int
@@ -37,6 +38,7 @@ class ProductCreate(Schema):
     is_featured: bool
     name: str
     description: str
+    image: str
     size: str
     qty: int
     cost: int

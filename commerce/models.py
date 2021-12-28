@@ -18,6 +18,7 @@ class ProductManager(models.Manager):
 class Product(Entity):
     name = models.CharField('name', max_length=255)
     description = models.TextField('description', null=True, blank=True)
+    image = models.ImageField('image', upload_to='product/', default="")
     size = models.CharField('size',  max_length=6,null=True, blank=True)
     qty = models.IntegerField('qty')
     cost = models.FloatField('cost')
@@ -139,4 +140,4 @@ class ProductImage(Entity):
             output_size = (500, 500)
             img.thumbnail(output_size)
             img.save(self.image.path)
-            # print(self.image.path)
+            print(self.image.path)
