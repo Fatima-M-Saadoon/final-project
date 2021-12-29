@@ -18,11 +18,10 @@ class ProductManager(models.Manager):
 class Product(Entity):
     name = models.CharField('name', max_length=255)
     description = models.TextField('description', null=True, blank=True)
-    image = models.ImageField('image', upload_to='product/', default="")
     size = models.CharField('size',  max_length=6,null=True, blank=True)
     qty = models.IntegerField('qty')
-    cost = models.FloatField('cost')
-    price = models.FloatField('price')
+    cost = models.FloatField('cost',)
+    price = models.FloatField('price',)
     discounted_price = models.FloatField('discounted price',default=0)
 
     category = models.ForeignKey('commerce.Category', verbose_name='category', related_name='product',
@@ -74,36 +73,12 @@ class Item(Entity):
     def __str__(self):
         return self.product.name
 
-'''
-class OrderStatus(Entity):
-    NEW = 'NEW'  # Order with reference created, items are in the basket.
-    # CREATED = 'CREATED'  # Created with items and pending payment.
-    # HOLD = 'HOLD'  # Stock reduced but still awaiting payment.
-    # FAILED = 'FAILED'  # Payment failed, retry is available.
-    # CANCELLED = 'CANCELLED'  # Cancelled by seller, stock increased.
-    PROCESSING = 'PROCESSING'  # Payment confirmed, processing order.
-    SHIPPED = 'SHIPPED'  # Shipped to customer.
-    COMPLETED = 'COMPLETED'  # Completed and received by customer.
-    REFUNDED = 'REFUNDED'  # Fully refunded by seller.
-
-    title = models.CharField('title', max_length=255, choices=[
-        (NEW, NEW),
-        (PROCESSING, PROCESSING),
-        (SHIPPED, SHIPPED),
-        (COMPLETED, COMPLETED),
-        (REFUNDED, REFUNDED),
-    ])
-    is_default = models.BooleanField('is default')
-
-    def __str__(self):
-        return self.title
-'''
 
 class Category(Entity):
     parent = models.ForeignKey('self', verbose_name='parent', related_name='children',
                                null=True,
                                blank=True,
-                               on_delete=models.SET_NULL,)
+                               on_delete=models.SET_NULL)
     name = models.CharField('name', max_length=255)
     description = models.TextField('description')
     image = models.ImageField('image', upload_to='category/')
@@ -125,8 +100,7 @@ class Category(Entity):
 class ProductImage(Entity):
     image = models.ImageField('image', upload_to='product/')
     is_default_image = models.BooleanField('is default image')
-    product = models.ForeignKey('commerce.Product', verbose_name='product', related_name='images', null=True, blank=True,
-                                on_delete=models.SET_NULL)
+    product = models.ForeignKey('commerce.Product', verbose_name='product', related_name='images', on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.product.name)
@@ -140,4 +114,6 @@ class ProductImage(Entity):
             output_size = (500, 500)
             img.thumbnail(output_size)
             img.save(self.image.path)
-            print(self.image.path)
+
+
+

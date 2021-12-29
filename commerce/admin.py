@@ -21,13 +21,18 @@ class ProductAdmin(admin.ModelAdmin):
 
 class CategoryAdmin(admin.ModelAdmin):
     search_fields = ['category']
-    list_display = ['id', 'name', 'description' ,'created']
+    list_display = ['id', 'name', 'description' ,'created','image']
+
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ['id','user', 'product', 'item_qty', 'ordered']
+    list_display = ['id','user', 'product', 'item_qty', 'ordered',]
 
+'''
+class ProductImageAdmin(admin.ModelAdmin):
+     list_display = ['product','is_default_image','image']
 
+'''
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Item,ItemAdmin)
-# admin.site.register(ProductImage)
+admin.site.register(ProductImage)

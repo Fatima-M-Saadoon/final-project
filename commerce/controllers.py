@@ -34,15 +34,11 @@ def list_products(request, q: str = None,):
     200: List[ProductOut],
     404: MessageOut
 })
-def search_products(
-        request, *,
-        q: str = None,
-
-):
+def search_products(request, *, q: str = None):
     """
     To create an order please provide:
-     - first_name
-     - last_name
+     - your_name
+     - user_name
      - and list of Items (product + amount)
     """
     products_qs = Product.objects.filter(is_active=True)\
