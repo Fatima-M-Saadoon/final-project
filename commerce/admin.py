@@ -4,9 +4,10 @@ from django.contrib.admin import TabularInline, ModelAdmin
 from commerce.models import (
     Product,
     Category,
-    Item, ProductImage,
-
+    Item, ProductImage
 )
+
+
 
 class InlineproductImage(admin.TabularInline):
         model = ProductImage
@@ -27,12 +28,10 @@ class CategoryAdmin(admin.ModelAdmin):
 class ItemAdmin(admin.ModelAdmin):
     list_display = ['id','user', 'product', 'item_qty', 'ordered',]
 
-'''
 class ProductImageAdmin(admin.ModelAdmin):
-     list_display = ['product','is_default_image','image']
+    list_display = ['id', 'image']
 
-'''
 admin.site.register(Product, ProductAdmin)
 admin.site.register(Category, CategoryAdmin)
 admin.site.register(Item,ItemAdmin)
-admin.site.register(ProductImage)
+admin.site.register(ProductImage,ProductImageAdmin)

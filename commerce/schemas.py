@@ -3,8 +3,10 @@ import datetime
 from ninja import Schema
 from pydantic import UUID4
 
-from commerce.models import ProductImage
 
+class prodectImage(Schema):
+    image: str
+    is_default_image: bool
 
 class CategoryOut(Schema):
     id: UUID4
@@ -26,7 +28,7 @@ class ProductOut(Schema):
     is_featured: bool
     name: str
     description: str
-    Image: list[ProductImage]
+    image: list[prodectImage]
     size: str
     qty: int
     price: int
@@ -40,7 +42,7 @@ class ProductCreate(Schema):
     is_featured: bool
     name: str
     description: str
-    Image: list[ProductImage]
+    image: list[prodectImage]
     size: str
     qty: int
     cost: int

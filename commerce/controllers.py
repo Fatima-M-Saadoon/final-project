@@ -221,6 +221,7 @@ def deleted_item(request, id: UUID4):
     item.delete()
     return 204, {'detail', 'تم حذف المنتج بنجاح'}
 
+
 @order_controller.post('create_order',auth=GlobalAuth(),response=MessageOut)
 def creat_order(request, id:UUID4):
     user =User.objects.get(id=request.auth['pk'])
