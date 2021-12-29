@@ -4,9 +4,10 @@ from django.contrib.admin import TabularInline, ModelAdmin
 from commerce.models import (
     Product,
     Category,
-    Item, ProductImage,
-
+    Item, ProductImage
 )
+
+
 
 class InlineproductImage(admin.TabularInline):
         model = ProductImage

@@ -1,7 +1,7 @@
 
 
-
-from PIL import Image
+import pydantic
+#from PIL import Image
 from django.contrib.auth import get_user_model
 from django.db import models
 
@@ -100,7 +100,8 @@ class Category(Entity):
 class ProductImage(Entity):
     image = models.ImageField('image', upload_to='product/')
     is_default_image = models.BooleanField('is default image')
-    product = models.ForeignKey('commerce.Product', verbose_name='product', related_name='images', on_delete=models.CASCADE)
+    product = models.ForeignKey('commerce.Product', verbose_name='product', related_name='images',
+                                on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.product.name)
@@ -114,6 +115,7 @@ class ProductImage(Entity):
             output_size = (500, 500)
             img.thumbnail(output_size)
             img.save(self.image.path)
+            # print(self.image.path)
 
 
 
