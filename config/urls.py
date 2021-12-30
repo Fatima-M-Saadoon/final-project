@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
-from django.urls import path, include
+from django.urls import path
 from ninja import NinjaAPI
 
 from account.controllers import account_controller
@@ -17,7 +17,6 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 ]
 
-urlpatterns += [path('silk/', include('silk.urls', namespace='silk'))]
 
 
 if settings.DEBUG:

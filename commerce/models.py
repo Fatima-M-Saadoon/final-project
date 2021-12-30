@@ -1,5 +1,6 @@
 
 
+
 from PIL import Image
 from django.contrib.auth import get_user_model
 from django.db import models
@@ -36,13 +37,13 @@ class Product(Entity):
     objects = ProductManager()
 
 
-
-
 class Order(Entity):
-    user = models.ForeignKey(User, verbose_name='user', related_name='orders', null=True, blank=True,
+    user = models.ForeignKey(User, verbose_name='user', related_name='order', null=True, blank=True,
                              on_delete=models.SET_NULL)
-
     total = models.DecimalField('total', blank=True, null=True, max_digits=1000, decimal_places=0)
+    #status = models.ForeignKey('commerce.OrderStatus', verbose_name='status', related_name='orders',on_delete=models.SET)
+    #note = models.CharField('note', null=True, blank=True, max_length=255)
+    #ref_code = models.CharField('ref code', max_length=255)
     ordered = models.BooleanField('ordered')
     items = models.ManyToManyField('commerce.Item', verbose_name='items', related_name='order')
 
@@ -63,15 +64,14 @@ class Item(Entity):
     Product can live alone in the system, while
     Item can only live within an order
     """
-    user = models.ForeignKey(User, verbose_name='user', related_name='items', on_delete=models.CASCADE)
-    product = models.ForeignKey('commerce.Product', verbose_name='product',
-                                on_delete=models.CASCADE)
+    user = models.ForeignKey(User, verbose_name='user', related_name='item', null=True, blank=True, on_delete=models.SET_NULL)
+    product = models.ForeignKey('commerce.Product', verbose_name='product', null=True, blank=True,
+                                on_delete=models.SET_NULL)
     item_qty = models.IntegerField('item_qty')
     ordered = models.BooleanField('ordered')
 
     def __str__(self):
         return self.product.name
-
 
 
 class Category(Entity):
@@ -100,8 +100,7 @@ class Category(Entity):
 class ProductImage(Entity):
     image = models.ImageField('image', upload_to='product/')
     is_default_image = models.BooleanField('is default image')
-    product = models.ForeignKey('commerce.Product', verbose_name='product', related_name='images',
-                                on_delete=models.CASCADE)
+    product = models.ForeignKey('commerce.Product', verbose_name='product', related_name='images', on_delete=models.CASCADE)
 
     def __str__(self):
         return str(self.product.name)
@@ -115,6 +114,6 @@ class ProductImage(Entity):
             output_size = (500, 500)
             img.thumbnail(output_size)
             img.save(self.image.path)
-            # print(self.image.path)
+
 
 

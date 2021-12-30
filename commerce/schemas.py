@@ -1,12 +1,11 @@
 import datetime
-
+from typing import List
+from django.db.models.fields import BooleanField
 from ninja import Schema
 from pydantic import UUID4
 
+from commerce.models import ProductImage
 
-class prodectImage(Schema):
-    image: str
-    is_default_image: bool
 
 class CategoryOut(Schema):
     id: UUID4
@@ -19,8 +18,19 @@ class CategoryCreat(Schema):
     name: str
     description: str
     image: str
-    created:datetime.datetime
-    is_active=bool
+    created: datetime.datetime
+    is_active = bool
+
+
+class ImageOut(Schema):
+    image: str
+    is_default_image: bool
+
+
+class ImageIn(Schema):
+    image: str
+    is_default_image: bool
+    product: UUID4
 
 
 class ProductOut(Schema):
@@ -28,7 +38,7 @@ class ProductOut(Schema):
     is_featured: bool
     name: str
     description: str
-    image: list[prodectImage]
+    image: List[ImageOut]
     size: str
     qty: int
     price: int
@@ -42,18 +52,16 @@ class ProductCreate(Schema):
     is_featured: bool
     name: str
     description: str
-    image: list[prodectImage]
+    images_id: List[UUID4]
     size: str
     qty: int
     cost: int
     price: int
     discounted_price: float
-    category_id: UUID4
-
+    category: UUID4
 
 
 class AddToCartPayload(Schema):
     product_id: UUID4
     qty: int
     ordered: bool
-
