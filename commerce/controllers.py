@@ -7,7 +7,7 @@ from ninja import Router
 from pydantic import UUID4
 
 from commerce.models import Product, Item, Category, Order
-from commerce.schemas import ProductOut, ProductCreate, AddToCartPayload, CategoryOut, CategoryCreat
+from commerce.schemas import ProductOut, AddToCartPayload, CategoryOut, CategoryCreat
 from config.utils.schemas import MessageOut
 
 User = get_user_model()
@@ -83,18 +83,18 @@ def new_products(request, categorys: UUID4 = None, featuerd: bool = None, is_act
 def retrieve_product(request, id: UUID4):
     return get_object_or_404(Product, id=id)
 
-
-@commerce_controller.post('products', response={
-    201: ProductOut,
-    400: MessageOut
-})
-def create_product(request, payload: ProductCreate):
-    try:
-        product = Product.objects.create(**payload.dict(), is_active=True)
-    except:
-        return 400, {'detail': 'حدث خلل ما!'}
-
-    return 201, product
+#
+# @commerce_controller.post('products', response={
+#     201: ProductOut,
+#     400: MessageOut
+# })
+# def create_product(request, payload: ProductCreate):
+#     try:
+#         product = Product.objects.create(**payload.dict(), is_active=True)
+#     except:
+#         return 400, {'detail': 'حدث خلل ما!'}
+#
+#     return 201, product
 
 
 @commerce_controller.get('products', response={
@@ -105,24 +105,24 @@ def list_products(request):
     products = Product.objects.all()
     return products
 
-
-@commerce_controller.delete('Delete_product/{id}')
-def delete_product(request, id:UUID4):
-    deleted_product = get_object_or_404(Product, id=id)
-    deleted_product.delete()
-    return {"success": True}
-
-
-@commerce_controller.put(" update_product/{id}", response={
-    200: ProductOut,
-    400: MessageOut
-})
-def update_product(request, id: UUID4, update: ProductCreate):
-    product_u = get_object_or_404(Product, id=id)  #check if i have a product or not
-    for attr, value in update.dict().items():
-        setattr(update, attr, value)
-    product_u.save()
-    return product_u
+#
+# @commerce_controller.delete('Delete_product/{id}')
+# def delete_product(request, id:UUID4):
+#     deleted_product = get_object_or_404(Product, id=id)
+#     deleted_product.delete()
+#     return {"success": True}
+#
+#
+# @commerce_controller.put(" update_product/{id}", response={
+#     200: ProductOut,
+#     400: MessageOut
+# })
+# def update_product(request, id: UUID4, update: ProductCreate):
+#     product_u = get_object_or_404(Product, id=id)  #check if i have a product or not
+#     for attr, value in update.dict().items():
+#         setattr(update, attr, value)
+#     product_u.save()
+#     return product_u
 
 
 @commerce_controller.get('category', response={

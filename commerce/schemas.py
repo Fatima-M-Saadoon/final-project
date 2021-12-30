@@ -26,19 +26,19 @@ class ImageOut(Schema):
     image: str
     is_default_image: bool
 
-
+'''
 class ImageIn(Schema):
     image: str
     is_default_image: bool
     product: UUID4
-
+'''
 
 class ProductOut(Schema):
     id: UUID4
     is_featured: bool
     name: str
     description: str
-    image: List[ImageOut]
+    images: List[ImageOut]
     size: str
     qty: int
     price: int
@@ -47,19 +47,19 @@ class ProductOut(Schema):
     created: datetime.datetime
     updated: datetime.datetime
 
-
+'''
 class ProductCreate(Schema):
     is_featured: bool
     name: str
     description: str
-    images_id: List[UUID4]
+    image: List[UUID4]
     size: str
     qty: int
     cost: int
     price: int
     discounted_price: float
     category: UUID4
-
+'''
 
 class AddToCartPayload(Schema):
     product_id: UUID4
