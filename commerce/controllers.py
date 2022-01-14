@@ -222,17 +222,16 @@ def deleted_item(request, id: UUID4):
     return 204, {'detail', 'تم حذف المنتج بنجاح'}
 
 
+
 @order_controller.post('create_order',auth=GlobalAuth(),response=MessageOut)
-def creat_order(request, id:UUID4):
+def creat_order(request):
     user =User.objects.get(id=request.auth['pk'])
     orderd_x=Order.objects.create(ordered=True,user=user)
-    user_item=Item.objects.filter(user=user)
-    orderd_x.items.add(user_item)
-
-    total=orderd_x.order_total
-    orderd_x.total=total
+    user_items=Item.objects.filter(user=user).filter(ordered=False)
+    orderd_x.items.add(*user_items)
+    orderd_x.total=orderd_x.order_total
     orderd_x.save()
 
-    return 200, {'detail':f'{total} ,تم الحجز السعر الكلي '}
+    return 200, {'detail':f'{orderd_x.total} تم الحجز السعر الكلي '}
 
 
