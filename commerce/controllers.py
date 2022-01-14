@@ -230,6 +230,7 @@ def creat_order(request):
     user_items=Item.objects.filter(user=user).filter(ordered=False)
     orderd_x.items.add(*user_items)
     orderd_x.total=orderd_x.order_total
+      user_items.update(ordered=True)
     orderd_x.save()
 
     return 200, {'detail':f'{orderd_x.total} تم الحجز السعر الكلي '}
