@@ -235,4 +235,17 @@ def creat_order(request):
 
     return 200, {'detail':f'{orderd_x.total} تم الحجز السعر الكلي '}
 
+@order_controller.get('cart', auth=GlobalAuth(), response={
+    200: List[ItemOut],
+    404: MessageOut
+})
+def view_cart(request):
+
+    cart_items = Item.objects.filter(user=request.auth['pk'], ordered=False)
+
+    if cart_items:
+        return cart_items
+
+    return 404, {'detail': 'السلة فارغة'}
+
 
