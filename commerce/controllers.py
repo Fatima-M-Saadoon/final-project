@@ -7,7 +7,7 @@ from ninja import Router
 from pydantic import UUID4
 
 from commerce.models import Product, Item, Category, Order
-from commerce.schemas import ProductOut, AddToCartPayload, CategoryOut, CategoryCreat
+from commerce.schemas import ProductOut, AddToCartPayload, CategoryOut, CategoryCreat, ItemOut
 from config.utils.schemas import MessageOut
 
 User = get_user_model()
@@ -230,7 +230,7 @@ def creat_order(request):
     user_items=Item.objects.filter(user=user).filter(ordered=False)
     orderd_x.items.add(*user_items)
     orderd_x.total=orderd_x.order_total
-      user_items.update(ordered=True)
+    user_items.update(ordered=True)
     orderd_x.save()
 
     return 200, {'detail':f'{orderd_x.total} تم الحجز السعر الكلي '}

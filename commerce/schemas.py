@@ -65,3 +65,34 @@ class AddToCartPayload(Schema):
     product_id: UUID4
     qty: int
     ordered: bool
+
+class UUIDSchema:
+    id=UUID4
+
+
+class ItemSchema(Schema):
+    product: ProductOut
+    item_qty: int
+    ordered: bool
+    id:UUID4
+
+class ItemOut( ItemSchema):
+    id=UUID4
+    # class UUIDSchema(Schema):
+    #     id: UUID4
+
+
+class UserOut(Schema):
+    username: str
+
+
+class OrderSchema(Schema):
+    items: List[ItemSchema]
+    order_total: float
+    ordered: bool
+    user: UserOut
+
+
+class OrderCreate(Schema):
+    items: List[UUID4]
+    item_qty:int
