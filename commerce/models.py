@@ -46,7 +46,7 @@ class Order(Entity):
     #ref_code = models.CharField('ref code', max_length=255)
     ordered = models.BooleanField('ordered')
     items = models.ManyToManyField('commerce.Item', verbose_name='items', related_name='order')
-
+    created = models.DateField(editable=False, auto_now_add=True)
     def __str__(self):
         return f'{self.user} + {self.total}'
 
@@ -69,7 +69,7 @@ class Item(Entity):
                                 on_delete=models.SET_NULL)
     item_qty = models.IntegerField('item_qty')
     ordered = models.BooleanField('ordered')
-
+    created = models.DateField(editable=False, auto_now_add=True)
     def __str__(self):
         return self.product.name
 
