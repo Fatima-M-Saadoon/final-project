@@ -26,14 +26,14 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class ItemAdmin(admin.ModelAdmin):
-    list_display = ['id','user', 'product', 'item_qty', 'ordered',]
+    list_display = ['id','user', 'product', 'item_qty', 'ordered','created']
 
 class ProductImageAdmin(admin.ModelAdmin):
     list_display = ['id', 'product','image']
 
 
 class OrderAdmin(admin.ModelAdmin):
-    list_display = ['user','ordered','total']
+    list_display = ['user','ordered','total','created']
 
 
 
