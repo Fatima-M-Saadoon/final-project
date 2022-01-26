@@ -3,7 +3,7 @@ from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 from account.forms import UserAdminChangeForm, UserAdminCreationForm
 from account.models import User
-
+from django.contrib.auth.models import Group
 
 class UserAdmin(BaseUserAdmin):
     # The forms to add and change user instances
@@ -37,3 +37,6 @@ class UserAdmin(BaseUserAdmin):
 
 
 admin.site.register(User, UserAdmin)
+admin.site.unregister(Group)
+admin.site.site_header="لوحة التحكم "
+admin.site.site_title="لوحة التحكم تطبيق هارمبو "
