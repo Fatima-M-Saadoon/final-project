@@ -7,7 +7,7 @@ from ninja import Router
 from pydantic import UUID4
 
 from commerce.models import Product, Item, Category, Order
-from commerce.schemas import ProductOut, AddToCartPayload, CategoryOut, CategoryCreat, ItemOut
+from commerce.schemas import ProductOut, AddToCartPayload, CategoryOut, CategoryCreat,ItemOut
 from config.utils.schemas import MessageOut
 
 User = get_user_model()
@@ -15,21 +15,7 @@ User = get_user_model()
 commerce_controller = Router(tags=['products'])
 order_controller = Router(tags=['order'])
 
-'''
-@commerce_controller.get(' search_products', response={
-    200: List[ProductOut],
-})
-def list_products(request, q: str = None,):
-    products = Product.objects.all()
 
-    if q:
-        products = products.filter(
-            Q(name__icontains=q) | Q(description__icontains=q)
-        )
-
-    return products
-
-'''
 @commerce_controller.get('', summary='search products', response={
     200: List[ProductOut],
     404: MessageOut
@@ -83,18 +69,7 @@ def new_products(request, categorys: UUID4 = None, featuerd: bool = None, is_act
 def retrieve_product(request, id: UUID4):
     return get_object_or_404(Product, id=id)
 
-#
-# @commerce_controller.post('products', response={
-#     201: ProductOut,
-#     400: MessageOut
-# })
-# def create_product(request, payload: ProductCreate):
-#     try:
-#         product = Product.objects.create(**payload.dict(), is_active=True)
-#     except:
-#         return 400, {'detail': 'حدث خلل ما!'}
-#
-#     return 201, product
+
 
 
 @commerce_controller.get('products', response={
@@ -105,24 +80,7 @@ def list_products(request):
     products = Product.objects.all()
     return products
 
-#
-# @commerce_controller.delete('Delete_product/{id}')
-# def delete_product(request, id:UUID4):
-#     deleted_product = get_object_or_404(Product, id=id)
-#     deleted_product.delete()
-#     return {"success": True}
-#
-#
-# @commerce_controller.put(" update_product/{id}", response={
-#     200: ProductOut,
-#     400: MessageOut
-# })
-# def update_product(request, id: UUID4, update: ProductCreate):
-#     product_u = get_object_or_404(Product, id=id)  #check if i have a product or not
-#     for attr, value in update.dict().items():
-#         setattr(update, attr, value)
-#     product_u.save()
-#     return product_u
+
 
 
 @commerce_controller.get('category', response={
@@ -175,12 +133,13 @@ def delete_category(request, id: UUID4):
 
 @order_controller.post('add-to-cart', response=MessageOut, auth=GlobalAuth())
 def add_to_cart(request, payload: AddToCartPayload):
+    user = get_object_or_404(User, id=request.auth['pk'])
     payload_validated = payload.copy()
     if payload.qty < 1:
         payload_validated.qty = 1
 
     try:
-        item = Item.objects.get(product_id=payload.product_id)
+        item = Item.objects.get(product_id=payload.product_id,user=user,ordered=False)
     except Item.DoesNotExist:
         user = get_object_or_404(User, id=request.auth['pk'])
         Item.objects.create(product_id=payload.product_id, user=user, item_qty=payload_validated.qty,
@@ -190,7 +149,6 @@ def add_to_cart(request, payload: AddToCartPayload):
     item.item_qty += payload_validated.qty
     item.save()
     return 200, {'detail': 'item qty updated successfully!'}
-
 
 @order_controller.post('increase-item/{item_id}', auth=GlobalAuth(), response=MessageOut)
 def increase_item_qty(request, item_id: UUID4):
@@ -222,7 +180,6 @@ def deleted_item(request, id: UUID4):
     return 204, {'detail', 'تم حذف المنتج بنجاح'}
 
 
-
 @order_controller.post('create_order',auth=GlobalAuth(),response=MessageOut)
 def creat_order(request):
     user =User.objects.get(id=request.auth['pk'])
@@ -232,8 +189,8 @@ def creat_order(request):
     orderd_x.total=orderd_x.order_total
     user_items.update(ordered=True)
     orderd_x.save()
-
     return 200, {'detail':f'{orderd_x.total} تم الحجز السعر الكلي '}
+
 
 @order_controller.get('cart', auth=GlobalAuth(), response={
     200: List[ItemOut],
@@ -247,5 +204,4 @@ def view_cart(request):
         return cart_items
 
     return 404, {'detail': 'السلة فارغة'}
-
 
