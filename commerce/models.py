@@ -18,7 +18,7 @@ class ProductManager(models.Manager):
 class Product(Entity):
     name = models.CharField('name', max_length=255)
     description = models.TextField('description', null=True, blank=True)
-    size = models.CharField('size',  max_length=6,null=True, blank=True)
+    size = models.CharField('size',  max_length=6, default="-")
     qty = models.IntegerField('qty')
     cost = models.FloatField('cost',)
     price = models.FloatField('price',)
