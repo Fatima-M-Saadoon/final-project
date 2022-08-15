@@ -17,7 +17,7 @@ account_controller = Router(tags=['auth'])
 })
 def signup(request, account_in: AccountCreate):
     if account_in.password1 != account_in.password2:
-        return 400, {'detail': 'الرمز عير مطابق'}
+        return 400, {'detail': 'الرمز غير مطابق'}
 
     try:
         User.objects.get(username=account_in.username)
